@@ -16,6 +16,8 @@ struct AddView: View {
     @State private var type = "Personal"
     @State private var amount = ""
 
+    @State private var wrongAmount = false
+
     static let types = ["Business", "Personal"]
 
     var body: some View {
@@ -27,8 +29,15 @@ struct AddView: View {
                         Text($0)
                     }
                 }
-                TextField("Amount", text: $amount)
-                    .keyboardType(.numberPad)
+                VStack {
+                    TextField("Amount", text: $amount)
+                        .keyboardType(.numberPad)
+                    if wrongAmount {
+                        Text("Amount must be an integer")
+                            .foregroundColor(.red)
+                            .font(.caption)
+                    }
+                }
             }
             .navigationBarTitle("Add new expense")
             .navigationBarItems(trailing: Button("Save") {
@@ -38,6 +47,8 @@ struct AddView: View {
                                            amount: actualAmount)
                     self.expenses.items.append(item)
                     self.presentationMode.wrappedValue.dismiss()
+                } else {
+                    self.wrongAmount = true
                 }
             })
         }

@@ -26,25 +26,36 @@ struct ContentView: View {
 
                             Spacer()
                             Text("$\(item.amount)")
+                                .foregroundColor(getTextColor(for: item.amount))
                         }
                     }
                 }
                 .onDelete(perform: removeItems)
             }
             .navigationBarTitle("iExpense")
-            .navigationBarItems(trailing:
-                Button(action: {
-                    self.showingAddExpense = true
-                }) {
-                    Image(systemName: "plus")
-                }
-            )
+            .navigationBarItems(
+                leading: EditButton(),
+                trailing:
+                    Button(action: {
+                        self.showingAddExpense = true
+                    }) {
+                        Image(systemName: "plus")
+                    })
             .sheet(isPresented: $showingAddExpense) {
                 AddView(expenses: self.expenses)
             }
         }
     }
 
+    func getTextColor(for amount: Int) -> Color {
+        if amount >= 100 {
+            return Color.red
+        } else if amount >= 10 {
+            return Color.orange
+        }
+        return Color.green
+    }
+    
     func removeItems(at offsets: IndexSet) {
         expenses.items.remove(atOffsets: offsets)
     }
